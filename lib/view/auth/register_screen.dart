@@ -23,7 +23,8 @@ class RegisterScreen extends StatelessWidget {
             "Register Screen",
             style: TextStyle(fontSize: 20.sp, color: Colors.white),
           )),
-      body: SingleChildScrollView(child: GetBuilder<RegisterControllerImp>(
+      body: SingleChildScrollView(
+        child: GetBuilder<RegisterControllerImp>(
         builder: (_) {
           return Form(
             key: _registerControllerImp.formKeyReg,

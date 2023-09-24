@@ -1,22 +1,30 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:instagramclone/view/auth/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:instagramclone/view/home_view/home_screen.dart';
 
 Future<void> main() async {
- WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  final prefs = await SharedPreferences.getInstance();
+  final bool isLoggedIn = FirebaseAuth.instance.currentUser != null ||
+      prefs.getBool('auth') == true;
+
+  runApp(MyApp(isLoggedIn: isLoggedIn, prefs: prefs));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isLoggedIn;
+  final SharedPreferences prefs;
+  const MyApp({super.key, required this.isLoggedIn, required this.prefs});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final Widget initialPage = isLoggedIn ? const HomeScreen() : LoginScreen();
     return ScreenUtilInit(
       designSize: const Size(360, 690),
       minTextAdapt: true,
@@ -24,8 +32,9 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
+          darkTheme: ThemeData.dark(),
           title: 'InstgramApp',
-          home: LoginScreen(),
+          home: initialPage,
         );
       },
     );

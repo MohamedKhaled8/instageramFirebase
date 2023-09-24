@@ -11,7 +11,6 @@ import 'package:instagramclone/widgets/auth/custom_text_form_field/custom_text_f
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
-  // ignore: unused_field
   final LoginScreenControllerImp _loginScreenControllerImp =
       Get.put(LoginScreenControllerImp());
   @override
@@ -30,7 +29,9 @@ class LoginScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        child: Form(
+          child: GetBuilder<LoginScreenControllerImp>(builder: (_) {
+        return Form(
+          key: _loginScreenControllerImp.formKeylog,
           child: Column(
             children: [
               SizedBox(
@@ -62,29 +63,27 @@ class LoginScreen extends StatelessWidget {
               SizedBox(
                 height: 10.h,
               ),
-              GetBuilder<LoginScreenControllerImp>(builder: (_) {
-                return CustomTextFormAuth(
-                  hinttext: 'Enter Your Password',
-                  labeltext: 'Password',
-                  obscureText: _loginScreenControllerImp.isShowPassword,
-                  onTapIcon: () {
-                    _loginScreenControllerImp.showPassword();
-                  },
-                  valid: (value) {
-                    if (value.toString().length < 6) {
-                      return 'Password should be longer or equal to 6 characters';
-                    } else {
-                      return null;
-                    }
-                  },
-                  mycontroller: _loginScreenControllerImp.passwordLogCont,
-                  iconData: _loginScreenControllerImp.isShowPassword
-                      ? Icons.visibility_off
-                      : Icons.visibility,
-                  isNumber: false,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                );
-              }),
+              CustomTextFormAuth(
+                hinttext: 'Enter Your Password',
+                labeltext: 'Password',
+                obscureText: _loginScreenControllerImp.isShowPassword,
+                onTapIcon: () {
+                  _loginScreenControllerImp.showPassword();
+                },
+                valid: (value) {
+                  if (value.toString().length < 6) {
+                    return 'Password should be longer or equal to 6 characters';
+                  } else {
+                    return null;
+                  }
+                },
+                mycontroller: _loginScreenControllerImp.passwordLogCont,
+                iconData: _loginScreenControllerImp.isShowPassword
+                    ? Icons.visibility_off
+                    : Icons.visibility,
+                isNumber: false,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+              ),
               CustomButtomLocal(
                 color: Colors.grey.shade600,
                 height: 45,
@@ -94,7 +93,9 @@ class LoginScreen extends StatelessWidget {
                 colorText: Colors.white,
                 radius: 25.r,
                 isIcon: false,
-                onTap: () {}, 
+                onTap: () async {
+                  await _loginScreenControllerImp.sendDataLoginUserToFirebase();
+                },
               ),
               const RevistScreen(
                 text: 'Do not have an account?',
@@ -102,8 +103,8 @@ class LoginScreen extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
+        );
+      })),
     );
   }
 }
