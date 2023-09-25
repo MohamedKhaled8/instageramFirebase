@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:instagramclone/view/home_view/home_screen.dart';
+import 'package:instagramclone/widgets/custom_bottom_bav_bar/custom_vab_bar.dart';
 
 abstract class LoginScreenController extends GetxController {
   showPassword();
@@ -45,7 +45,7 @@ class LoginScreenControllerImp extends LoginScreenController {
         );
         update();
 
-        Get.offAll(const HomeScreen());
+        Get.offAll( CustomBottomNavBar());
       } else {
         Get.snackbar(
           "Login Failed",

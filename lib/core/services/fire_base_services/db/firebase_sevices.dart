@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:instagramclone/core/model/users_model.dart';
 
@@ -15,7 +16,8 @@ class FireBaseServices {
       print("User Added");
     } catch (error) {
       print("Failed to add user: $error");
-      throw error; 
+      throw error;
     }
   }
+
 }

@@ -5,7 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:instagramclone/view/auth/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:instagramclone/view/home_view/home_screen.dart';
+import 'package:instagramclone/widgets/custom_bottom_bav_bar/custom_vab_bar.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +24,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Widget initialPage = isLoggedIn ? const HomeScreen() : LoginScreen();
+    final Widget initialPage =
+        isLoggedIn ? CustomBottomNavBar() : LoginScreen();
     return ScreenUtilInit(
       designSize: const Size(360, 690),
       minTextAdapt: true,

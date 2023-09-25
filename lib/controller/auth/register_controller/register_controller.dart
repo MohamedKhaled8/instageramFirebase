@@ -246,6 +246,8 @@ class RegisterControllerImp extends RegisterController {
         password: password,
         profileImg: imageUrl,
         uid: credential.user!.uid,
+        followers: [],
+        following: [],
       );
       final firestoreServices = FireBaseServices();
       await firestoreServices.addUserToDatabase(
