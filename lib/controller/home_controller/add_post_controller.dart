@@ -7,6 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:instagramclone/core/services/fire_base_services/cloud/cloud_image.dart';
+import 'package:instagramclone/core/services/fire_base_services/db/firebase_sevices.dart';
 
 abstract class AddPostController extends GetxController {
   uploadImage2Screen(ImageSource source);
@@ -19,6 +21,7 @@ class AddPostControllerImp extends AddPostController {
   Uint8List? imgPath;
   String? imgName;
   Map userData = {};
+  final TextEditingController decorationController = TextEditingController();
   @override
   uploadImage2Screen(ImageSource source) async {
     Get.back();
@@ -124,13 +127,52 @@ class AddPostControllerImp extends AddPostController {
     update();
   }
 
-  void funisLoading() {
-    isLoading = true;
+  void funisLoading(bool isLoading) {
+    isLoading = isLoading;
     update();
   }
+
+  Future<void> uploadPost({
+    required imgName,
+    required imgPath,
+    required description,
+    required profileImg,
+    required username,
+  }) async {
+    String message = "ERROR => Not starting the code";
+
+    try {
+      final cloudFireBaseStorge = CloudFireBaseStorge();
+      final fireBaseServices = FireBaseServices();
+      String urlll = await cloudFireBaseStorge.getImgURL(
+          imgName: imgName,
+          imgPath: imgPath,
+          folderName: 'imgPosts/${FirebaseAuth.instance.currentUser!.uid}');
+
+      fireBaseServices.uploadPost(
+          description: description,
+          urlll: urlll,
+          profileImg: profileImg,
+          username: username);
+
+      message = " Posted successfully ♥ ♥";
+    } on FirebaseAuthException {
+      Get.snackbar(message, message);
+    } catch (e) {
+      Get.snackbar(message, message);
+    }
+  }
+
+
   @override
   void onInit() {
-getPhotoToAddPost() ;
+    getPhotoToAddPost();
     super.onInit();
+  }
+
+  @override
+  void dispose() {
+    decorationController.dispose();
+    super.dispose();
   }
 }

@@ -4,9 +4,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 class CloudFireBaseStorge {
   getImgURL({
     required String imgName,
+    required String folderName,
     required Uint8List imgPath,
   }) async {
-    final storageRef = FirebaseStorage.instance.ref("profileIMG/$imgName");
+    final storageRef = FirebaseStorage.instance.ref("$folderName/$imgName");
 
     UploadTask uploadTask = storageRef.putData(imgPath);
     TaskSnapshot snap = await uploadTask;
@@ -15,4 +16,5 @@ class CloudFireBaseStorge {
 
     return urll;
   }
+  
 }

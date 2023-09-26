@@ -238,6 +238,7 @@ class RegisterControllerImp extends RegisterController {
       String imageUrl = await cloudFireBaseStorge.getImgURL(
         imgName: imgName,
         imgPath: imgPath,
+        folderName: 'profileIMG',
       );
       final userModel = UsersModel(
         name: name,
