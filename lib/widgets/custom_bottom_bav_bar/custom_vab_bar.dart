@@ -5,7 +5,7 @@ import 'package:instagramclone/core/constant/color.dart';
 import 'package:instagramclone/view/home_view/home_screen.dart';
 import 'package:instagramclone/view/search_view/search_screen.dart';
 import 'package:instagramclone/view/profile_view/profile_screen.dart';
-import 'package:instagramclone/view/add_post_view/add_posr_screen.dart';
+import 'package:instagramclone/view/add_post_view/add_post_screen.dart';
 import 'package:instagramclone/controller/nav_bar_controller/nav_bar_controller.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
@@ -73,7 +73,7 @@ class CustomBottomNavBar extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           controller: _bottomNavigationBarControllerImp.pageController,
           children:  [
-            const HomeScreen(),
+             HomeScreen(),
             SearchScreen(),
            AddPostScreen(),
             const Center(child: Text("Love u ♥")),

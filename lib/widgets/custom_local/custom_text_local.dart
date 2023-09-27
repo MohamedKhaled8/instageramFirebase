@@ -36,6 +36,7 @@ class CustomTextLocal extends StatelessWidget {
             text,
             maxLines: maxLines,
             style: TextStyle(
+              
               overflow: overflow,
               color: color,
               fontSize: fontSize,

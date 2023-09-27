@@ -32,7 +32,7 @@ class FireBaseServices {
 
     String newId = const Uuid().v1();
 
-    PostModel postModel = PostModel(
+    PostData postModel = PostData(
         datePublished: DateTime.now(),
         description: description,
         imgPost: urlll,
@@ -41,12 +41,23 @@ class FireBaseServices {
         postId: newId,
         uid: FirebaseAuth.instance.currentUser!.uid,
         username: username);
-     
 
     posts
         .doc(newId)
-        .set(postModel.toMap())
+        .set(postModel.convert2Map())
         .then((value) => print("done................"))
         .catchError((error) => print("Failed to post: $error"));
+  }
+
+  Future<List<Map<String, dynamic>>> fetchDataFromFirebase() async {
+    final QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await FirebaseFirestore.instance.collection('Posts').get();
+
+    final List<Map<String, dynamic>> data = querySnapshot.docs
+        .map((QueryDocumentSnapshot<Map<String, dynamic>> document) {
+      return document.data();
+    }).toList();
+
+    return data;
   }
 }

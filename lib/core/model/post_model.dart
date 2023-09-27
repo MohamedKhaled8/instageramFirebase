@@ -1,4 +1,7 @@
-class PostModel {
+import 'package:cloud_firestore/cloud_firestore.dart';
+// post_data.dart
+
+class PostData {
   final String profileImg;
   final String username;
   final String description;
@@ -7,7 +10,8 @@ class PostModel {
   final String postId;
   final DateTime datePublished;
   final List likes;
-  PostModel({
+
+  PostData({
     required this.profileImg,
     required this.username,
     required this.description,
@@ -18,31 +22,32 @@ class PostModel {
     required this.likes,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'profileImg': profileImg,
-      'username': username,
-      'description': description,
-      'imgPost': imgPost,
-      'uid': uid,
-      'postId': postId,
-      'datePublished': datePublished.millisecondsSinceEpoch,
-      'likes': likes,
+  // تحويل البيانات إلى Map<String, dynamic>
+  Map<String, dynamic> convert2Map() {
+    return {
+      "profileImg": profileImg,
+      "username": username,
+      "description": description,
+      "imgPost": imgPost,
+      "uid": uid,
+      "postId": postId,
+      "datePublished": datePublished.millisecondsSinceEpoch ~/ 1000, // تحويل التاريخ إلى timestamp
+      "likes": likes,
     };
   }
 
-  factory PostModel.fromMap(Map<String, dynamic> map) {
-    return PostModel(
-        profileImg: map['profileImg'] as String,
-        username: map['username'] as String,
-        description: map['description'] as String,
-        imgPost: map['imgPost'] as String,
-        uid: map['uid'] as String,
-        postId: map['postId'] as String,
-        datePublished:
-            DateTime.fromMillisecondsSinceEpoch(map['datePublished'] as int),
-        likes: List.from(
-          (map['likes'] as List),
-        ));
+  // تحويل DocumentSnapshot إلى كائن من نوع PostData
+  static PostData convertSnap2Model(DocumentSnapshot snap) {
+    var snapshot = snap.data() as Map<String, dynamic>;
+    return PostData(
+      profileImg: snapshot["profileImg"],
+      username: snapshot["username"],
+      description: snapshot["description"],
+      imgPost: snapshot["imgPost"],
+      uid: snapshot["uid"],
+      postId: snapshot["postId"],
+      datePublished: DateTime.fromMillisecondsSinceEpoch(snapshot["datePublished"] * 1000), // تحويل timestamp إلى DateTime
+      likes: snapshot["likes"],
+    );
   }
 }

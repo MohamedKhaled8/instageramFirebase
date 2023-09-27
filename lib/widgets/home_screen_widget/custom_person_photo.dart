@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:instagramclone/core/constant/color.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+
 
 class CustomPersonPhoto extends StatelessWidget {
+    final Map data;
   const CustomPersonPhoto({
-    super.key,
-  });
+    Key? key,
+    required this.data,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,16 +29,17 @@ class CustomPersonPhoto extends StatelessWidget {
                       color: blueColor
                     ),
                     child: CircleAvatar(
-                      radius: 30.r,
-                      backgroundImage: const NetworkImage(
-                          "https://cdn.pixabay.com/photo/2023/08/21/23/11/woman-8205187_1280.jpg"),
+                      radius: 25.r,
+                      backgroundImage:  NetworkImage(
+                         data["profileImg"],
                     ),
+                  ),
                   ),
                   SizedBox(
                     width: 15.w,
                   ),
                   Text(
-                    "Name K",
+                    data["username"],
                     style: TextStyle(color: Colors.white, fontSize: 18.sp),
                   ),
                 ],
@@ -48,7 +53,7 @@ class CustomPersonPhoto extends StatelessWidget {
             ],
           ),
           Image.network(
-            "https://cdn.pixabay.com/photo/2023/09/03/11/13/mountains-8230502_1280.jpg",
+            data["imgPost"],
             height: MediaQuery.of(context).size.height * 0.35,
             width: double.infinity,
           )

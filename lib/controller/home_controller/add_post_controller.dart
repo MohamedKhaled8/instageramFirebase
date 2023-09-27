@@ -14,6 +14,15 @@ abstract class AddPostController extends GetxController {
   uploadImage2Screen(ImageSource source);
   showmodel(BuildContext context);
   Future<void> getPhotoToAddPost();
+   void checkImagePath();
+     void funisLoading(bool isLoading);
+       Future<void> uploadPost({
+    required imgName,
+    required imgPath,
+    required description,
+    required profileImg,
+    required username,
+  });
 }
 
 class AddPostControllerImp extends AddPostController {
@@ -122,16 +131,19 @@ class AddPostControllerImp extends AddPostController {
     update();
   }
 
+  @override
   void checkImagePath() {
     imgPath = null;
     update();
   }
 
+  @override
   void funisLoading(bool isLoading) {
     isLoading = isLoading;
     update();
   }
 
+  @override
   Future<void> uploadPost({
     required imgName,
     required imgPath,
