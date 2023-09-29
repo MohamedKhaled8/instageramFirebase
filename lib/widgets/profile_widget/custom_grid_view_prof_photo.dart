@@ -1,28 +1,41 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:instagramclone/controller/home_controller/profile_controller.dart';
 
 class CustomGridViewProfilePhoto extends StatelessWidget {
-  const CustomGridViewProfilePhoto({super.key});
-
+  CustomGridViewProfilePhoto({super.key});
+  final ProfileControllerImp _profileControllerImp = Get.find();
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-        itemCount: 3,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 3 / 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-        ),
-        itemBuilder: ((context, index) {
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(10).r,
-            child: Image.network(
-              "https://cdn.pixabay.com/photo/2023/09/03/11/13/mountains-8230502_1280.jpg",
-              fit: BoxFit.cover,
-              
+    return Obx(() {
+      if (_profileControllerImp.filterPostList.isEmpty) {
+        return const Center(
+          child: CircularProgressIndicator(
+            color: Colors.white,
+          ),
+        );
+      } else if (_profileControllerImp.filterPostList.isNotEmpty) {
+        return GridView.builder(
+            itemCount: _profileControllerImp.filterPostList.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 3 / 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
             ),
-          );
-        }));
+            itemBuilder: ((context, index) {
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(10).r,
+                child: Image.network(
+                  _profileControllerImp.filterPostList[index]["imgPost"],
+                  fit: BoxFit.cover,
+                ),
+              );
+            }));
+      } else {
+        return const Text("Something went wrong");
+      }
+    });
   }
 }

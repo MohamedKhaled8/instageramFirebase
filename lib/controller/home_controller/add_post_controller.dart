@@ -14,9 +14,9 @@ abstract class AddPostController extends GetxController {
   uploadImage2Screen(ImageSource source);
   showmodel(BuildContext context);
   Future<void> getPhotoToAddPost();
-   void checkImagePath();
-     void funisLoading(bool isLoading);
-       Future<void> uploadPost({
+  void checkImagePath();
+  void funisLoading(bool isLoading);
+  Future<void> uploadPost({
     required imgName,
     required imgPath,
     required description,
@@ -124,6 +124,7 @@ class AddPostControllerImp extends AddPostController {
 
       userData = snapshot.data()!;
     } catch (e) {
+      // ignore: avoid_print
       print(e.toString());
     }
 
@@ -174,7 +175,6 @@ class AddPostControllerImp extends AddPostController {
       Get.snackbar(message, message);
     }
   }
-
 
   @override
   void onInit() {

@@ -12,7 +12,7 @@ class CustomBottomNavBar extends StatelessWidget {
   final BottomNavigationBarControllerImp _bottomNavigationBarControllerImp =
       Get.put(BottomNavigationBarControllerImp());
 
-   CustomBottomNavBar({super.key});
+  CustomBottomNavBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -69,15 +69,16 @@ class CustomBottomNavBar extends StatelessWidget {
                   label: ""),
             ]),
         body: PageView(
-        
           physics: const NeverScrollableScrollPhysics(),
           controller: _bottomNavigationBarControllerImp.pageController,
-          children:  [
-             HomeScreen(),
-            SearchScreen(),
-           AddPostScreen(),
+          children: [
+            HomeScreen(),
+             SearchScreen(),
+            AddPostScreen(),
             const Center(child: Text("Love u ♥")),
-            ProfileScreen(),
+            ProfileScreen(
+              uid: _bottomNavigationBarControllerImp.getCurrentUserUid(),
+            ),
           ],
         ),
       );

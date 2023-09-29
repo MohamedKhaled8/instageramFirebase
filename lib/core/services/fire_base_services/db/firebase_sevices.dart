@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:instagramclone/core/model/post_model.dart';
 import 'package:instagramclone/core/model/users_model.dart';
+// ignore_for_file: avoid_print
+
 
 class FireBaseServices {
   final CollectionReference users =
@@ -15,9 +17,13 @@ class FireBaseServices {
     try {
       final Map<String, dynamic> userData = userModel.toMap();
       await users.doc(uid).set(userData);
+      // ignore: avoid_print
       print("User Added");
     } catch (error) {
+      // ignore: avoid_print
       print("Failed to add user: $error");
+
+      // ignore: use_rethrow_when_possible
       throw error;
     }
   }
@@ -59,5 +65,25 @@ class FireBaseServices {
     }).toList();
 
     return data;
+  }
+
+  Future<Map<String, dynamic>> filterPostUser(String uiddd) async {
+    try {
+      final uid = uiddd;
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection("Posts")
+          .where("uid", isEqualTo: uid)
+          .get();
+      final filterPostList = querySnapshot.docs;
+      final postCount = filterPostList.length;
+
+      return {
+        "filterPostList": filterPostList,
+        "postCount": postCount,
+      };
+    } catch (e) {
+      // ignore: use_rethrow_when_possible
+      throw e;
+    }
   }
 }

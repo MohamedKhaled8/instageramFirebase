@@ -10,88 +10,105 @@ import 'package:instagramclone/widgets/profile_widget/custom_grid_view_prof_phot
 import 'package:instagramclone/widgets/profile_widget/custom_post_and_follw_and_follwing.dart';
 
 class ProfileScreen extends StatelessWidget {
-  ProfileScreen({Key? key}) : super(key: key);
+  final String uid;
+  ProfileScreen({
+    Key? key,
+    required this.uid,
+  }) : super(key: key);
   final ProfileControllerImp _profileControllerImp =
       Get.put(ProfileControllerImp());
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ProfileControllerImp>(builder: (_) {
-      return _profileControllerImp.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Scaffold(
-              backgroundColor: mobileBackgroundColor,
-              appBar: AppBar(
-                backgroundColor: mobileBackgroundColor,
-                title: Text(_profileControllerImp.userData["name"]),
-              ),
-              body: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    Row(
-                      children: [
-                        CustomPhotoProfileScreen(),
-                        Expanded(
-                          child: Column(
-                            // Change from Row to Column
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const CustomPostAndFollwAndFollwing(
-                                    numeString: '1',
-                                    text: 'Post',
-                                  ),
-                                  SizedBox(
-                                    width: 20.w,
-                                  ),
-                                  CustomPostAndFollwAndFollwing(
-                                    numeString: _profileControllerImp.followers
-                                        .toString(),
-                                    text: 'Followers',
-                                  ),
-                                  SizedBox(
-                                    width: 20.w,
-                                  ),
-                                  CustomPostAndFollwAndFollwing(
-                                    numeString: _profileControllerImp.following
-                                        .toString(),
-                                    text: 'Following',
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 25.h,
-                    ),
-                    CustomTextLocal(
-                      text: _profileControllerImp.userData["title"],
-                      color: Colors.white,
-                      fontSize: 18.sp,
-                      height: 0,
-                      width: 15,
-                      alignment: Alignment.centerLeft,
-                    ),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    const Divider(
-                      color: Colors.white,
-                      thickness: 0.10,
-                      endIndent: 25,
-                      indent: 25,
-                    ),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    Row(
+    _profileControllerImp.getData(uid);
+
+    return Scaffold(
+      backgroundColor: mobileBackgroundColor,
+      appBar: AppBar(
+        backgroundColor: mobileBackgroundColor,
+        title: GetBuilder<ProfileControllerImp>(
+          builder: (_) {
+            return _profileControllerImp.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : Text(_profileControllerImp.userData["name"]);
+          },
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: 20.h,
+            ),
+            Row(
+              children: [
+                GetBuilder<ProfileControllerImp>(builder: (_) {
+                  return CustomPhotoProfileScreen();
+                }),
+                Expanded(
+                  child: Column(
+                    children: [
+                      GetBuilder<ProfileControllerImp>(builder: (_) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CustomPostAndFollwAndFollwing(
+                              numeString:
+                                  _profileControllerImp.postCount.toString(),
+                              text: 'Post',
+                            ),
+                            SizedBox(
+                              width: 20.w,
+                            ),
+                            CustomPostAndFollwAndFollwing(
+                              numeString:
+                                  _profileControllerImp.followers.toString(),
+                              text: 'Followers',
+                            ),
+                            SizedBox(
+                              width: 20.w,
+                            ),
+                            CustomPostAndFollwAndFollwing(
+                              numeString:
+                                  _profileControllerImp.following.toString(),
+                              text: 'Following',
+                            ),
+                          ],
+                        );
+                      })
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 25.h,
+            ),
+            GetBuilder<ProfileControllerImp>(builder: (_) {
+              return CustomTextLocal(
+                text: _profileControllerImp.userData["title"],
+                color: Colors.white,
+                fontSize: 18.sp,
+                height: 0,
+                width: 15,
+                alignment: Alignment.centerLeft,
+              );
+            }),
+            SizedBox(
+              height: 10.h,
+            ),
+            const Divider(
+              color: Colors.white,
+              thickness: 0.10,
+              endIndent: 25,
+              indent: 25,
+            ),
+            SizedBox(
+              height: 10.h,
+            ),
+            GetBuilder<ProfileControllerImp>(builder: (_) {
+              return _profileControllerImp.isCurrentUser
+                  ? Row(
                       children: [
                         CustomButtomLocal(
                           onTap: () {},
@@ -123,19 +140,34 @@ class ProfileScreen extends StatelessWidget {
                           colorIcon: Colors.white,
                         ),
                       ],
-                    ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.all(5.0).copyWith(right: 5.0),
-                      height: 500.h,
-                      child: const CustomGridViewProfilePhoto(),
                     )
-                  ],
-                ),
-              ),
-            );
-    });
+                  : CustomButtomLocal(
+                      onTap: () {},
+                      isIcon: true,
+                      height: 45,
+                      width: 180,
+                      radius: 15,
+                      color: Colors.blue,
+                      fontSize: 16.sp,
+                      // border: Border.all(color: Colors.white, width: 0),
+                      text: 'Follow',
+                      colorText: Colors.white,
+                      icon: Icons.logout,
+                      iconSize: 25.sp,
+                      colorIcon: Colors.white,
+                    );
+            }),
+            SizedBox(
+              height: 20.h,
+            ),
+            Container(
+              margin: const EdgeInsets.all(5.0).copyWith(right: 5.0),
+              height: 500.h,
+              child: CustomGridViewProfilePhoto(),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

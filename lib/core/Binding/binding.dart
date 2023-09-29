@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:instagramclone/controller/home_controller/search_controller.dart';
 import 'package:instagramclone/controller/home_controller/profile_controller.dart';
 import 'package:instagramclone/controller/home_controller/add_post_controller.dart';
 import 'package:instagramclone/controller/nav_bar_controller/nav_bar_controller.dart';
@@ -13,5 +14,6 @@ class Binding extends Bindings {
     Get.lazyPut(() => LoginScreenControllerImp());
     Get.lazyPut(() => ProfileControllerImp());
     Get.lazyPut(() => AddPostControllerImp());
+    Get.lazyPut(() => SearchControllerImp());
   }
 }

@@ -45,7 +45,7 @@ class HomeScreen extends StatelessWidget {
             );
           } else if (_homeControllerImp.hasError.value) {
             const Center(
-              child: Text('حدث خطأ أثناء استرجاع البيانات'),
+              child: Text('An error occurred while retrieving data'),
             );
           } else {
             return ListView.builder(
