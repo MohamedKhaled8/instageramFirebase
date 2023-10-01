@@ -112,8 +112,8 @@ class ProfileScreen extends StatelessWidget {
                       children: [
                         CustomButtomLocal(
                           onTap: () {},
-                          height: 45,
-                          width: 140,
+                          height: 40,
+                          width: 210,
                           radius: 15,
                           border: Border.all(color: Colors.white, width: 0),
                           text: 'Edit Profile',
@@ -127,8 +127,8 @@ class ProfileScreen extends StatelessWidget {
                         CustomButtomLocal(
                           onTap: () {},
                           isIcon: true,
-                          height: 45,
-                          width: 140,
+                          height: 40,
+                          width: 210,
                           radius: 15,
                           color: const Color.fromARGB(143, 255, 55, 112),
                           fontSize: 16.sp,
@@ -142,18 +142,31 @@ class ProfileScreen extends StatelessWidget {
                       ],
                     )
                   : CustomButtomLocal(
-                      onTap: () {},
-                      isIcon: true,
-                      height: 45,
-                      width: 180,
+                      onTap: () {
+                        if (_profileControllerImp.showFollow) {
+                          _profileControllerImp.isIncrease(true);
+                          _profileControllerImp.isBool(false);
+                          _profileControllerImp.updateFollowersAndFollowing(
+                              _profileControllerImp.auth, uid);
+                        } else {
+                          _profileControllerImp.isIncrease(false);
+                          _profileControllerImp.isBool(true);
+                          _profileControllerImp.updateFollowersAndFollowing(
+                              _profileControllerImp.auth, uid);
+                        }
+                      },
+                      isIcon: false,
+                      height: 40,
+                      width: 210,
                       radius: 15,
-                      color: Colors.blue,
-                      fontSize: 16.sp,
-                      // border: Border.all(color: Colors.white, width: 0),
-                      text: 'Follow',
+                      color: _profileControllerImp.showFollow
+                          ? Colors.blue
+                          : const Color.fromARGB(143, 255, 55, 112),
+                      fontSize: 20.sp,
+                      text: _profileControllerImp.showFollow
+                          ? 'Follow'
+                          : 'unFollow',
                       colorText: Colors.white,
-                      icon: Icons.logout,
-                      iconSize: 25.sp,
                       colorIcon: Colors.white,
                     );
             }),

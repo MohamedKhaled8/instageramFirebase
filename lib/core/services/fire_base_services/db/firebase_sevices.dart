@@ -86,4 +86,31 @@ class FireBaseServices {
       throw e;
     }
   }
+   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+
+  Future<void> updateFollowersAndFollowing(
+      String currentUserUid, String otherUserUid, bool showFollow) async {
+    try {
+      if (showFollow) {
+        // إذا كان showFollow يساوي true، استخدم arrayUnion
+        await _firebaseFirestore.collection("Users").doc(otherUserUid).update({
+          "followers": FieldValue.arrayUnion([currentUserUid]),
+        });
+        await _firebaseFirestore.collection("Users").doc(currentUserUid).update({
+          "followers": FieldValue.arrayUnion([otherUserUid]),
+        });
+      } else {
+        // إذا كان showFollow يساوي false، استخدم arrayRemove
+        await _firebaseFirestore.collection("Users").doc(otherUserUid).update({
+          "followers": FieldValue.arrayRemove([currentUserUid]),
+        });
+        await _firebaseFirestore.collection("Users").doc(currentUserUid).update({
+          "followers": FieldValue.arrayRemove([otherUserUid]),
+        });
+      }
+    } catch (e) {
+      print("Error updating followers and following: $e");
+      throw e;
+    }
+  }
 }

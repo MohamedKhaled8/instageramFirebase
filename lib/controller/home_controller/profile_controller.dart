@@ -9,46 +9,107 @@ abstract class ProfileController extends GetxController {
   Future<void> filterPostUser(String uiddd);
   void updateIsCurrentUser(String uid);
   Future<void> getUsers(String userName);
+  Future<void> updateFollowersAndFollowing(
+      String currentUserUid, String otherUserUid);
+  void isBool(bool showBackButton);
+  void isIncrease(bool showFollows);
+  Map get userData;
+  bool get isLoading;
+  int get followers;
+  int get following;
+  List get filterPostList;
+  int get postCount;
+  bool get isCurrentUser;
+  bool get showBackButton;
+  bool get showFollow;
+  List<Map<String, dynamic>> get searchResults;
+  List<QueryDocumentSnapshot> get users;
+  TextEditingController get myController;
+  String get auth;
+  FirebaseFirestore get firebaseFirestore;
 }
 
 class ProfileControllerImp extends ProfileController {
-  Map userData = {};
-  bool isLoading = true;
-  int followers = 0;
-  int following = 0;
-  var filterPostList = [].obs;
-  int postCount = 0;
-  bool isCurrentUser = false;
-  var showBackButton = false;
-  var searchResults = <Map<String, dynamic>>[];
-  var users = <QueryDocumentSnapshot>[];
-  final TextEditingController myController = TextEditingController();
+  Map _userData = {};
+  bool _isLoading = true;
+  int _followers = 0;
+  int _following = 0;
+  final List _filterPostList = [];
+  int _postCount = 0;
+  bool _isCurrentUser = false;
+  final _showBackButton = false;
+  bool _showFollow = true;
+
+  @override
+  Map get userData => _userData;
+
+  @override
+  bool get isLoading => _isLoading;
+
+  @override
+  int get followers => _followers;
+
+  @override
+  int get following => _following;
+
+  @override
+  List get filterPostList => _filterPostList;
+
+  @override
+  int get postCount => _postCount;
+
+  @override
+  bool get isCurrentUser => _isCurrentUser;
+
+  @override
+  bool get showBackButton => _showBackButton;
+  @override
+  bool get showFollow => _showFollow;
+
+  @override
+  List<Map<String, dynamic>> get searchResults => _searchResults;
+  @override
+  List<QueryDocumentSnapshot> get users => _users;
+  @override
+  TextEditingController get myController => _myController;
+  @override
+  String get auth => _auth;
+  @override
+  FirebaseFirestore get firebaseFirestore => _firebaseFirestore;
+
+  final _searchResults = <Map<String, dynamic>>[];
+  final _users = <QueryDocumentSnapshot>[];
+  final TextEditingController _myController = TextEditingController();
+  final _auth = FirebaseAuth.instance.currentUser!.uid;
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  final FireBaseServices _fireBaseServices = FireBaseServices();
 
   @override
   Future<void> getUsers(String userName) async {
     try {
-      var query = await FirebaseFirestore.instance
+      var query = await firebaseFirestore
           .collection('Users')
           .where("name", isEqualTo: userName)
           .get();
       users.assignAll(query.docs);
     } catch (e) {
-      // print("Error fetching user data: $e");
+      print("Error fetching user data: $e");
     }
   }
 
   @override
   Future<void> getData(String uiddd) async {
-    isLoading = true;
+    _isLoading = true;
     update();
 
     try {
       DocumentSnapshot<Map<String, dynamic>> snapshot =
-          await FirebaseFirestore.instance.collection('Users').doc(uiddd).get();
+          await firebaseFirestore.collection('Users').doc(uiddd).get();
 
-      userData = snapshot.data()!;
-      followers = userData["followers"].length;
-      following = userData["following"].length;
+      _userData = snapshot.data()!;
+      _followers = userData["followers"].length;
+      _following = userData["following"].length;
+      _showFollow = userData["followers"].contains(auth);
       filterPostUser(uiddd);
 
       updateIsCurrentUser(uiddd);
@@ -56,16 +117,16 @@ class ProfileControllerImp extends ProfileController {
       Get.snackbar(e.toString(), "${Text(e.toString())}");
     }
 
-    isLoading = false;
+    _isLoading = false;
     update();
   }
 
   @override
   Future<void> filterPostUser(String uiddd) async {
     try {
-      final result = await FireBaseServices().filterPostUser(uiddd);
+      final result = await _fireBaseServices.filterPostUser(uiddd);
       filterPostList.assignAll(result["filterPostList"]);
-      postCount = result["postCount"];
+      _postCount = result["postCount"];
     } catch (e) {
       Get.snackbar(e.toString(), "${Text(e.toString())}");
     }
@@ -74,13 +135,41 @@ class ProfileControllerImp extends ProfileController {
 
   @override
   void updateIsCurrentUser(String uid) {
-    isCurrentUser = (uid == FirebaseAuth.instance.currentUser!.uid);
+    _isCurrentUser = (uid == auth);
+    update();
+  }
+
+  @override
+  Future<void> updateFollowersAndFollowing(
+      String currentUserUid, String otherUserUid) async {
+    try {
+      _fireBaseServices.updateFollowersAndFollowing(
+          currentUserUid, otherUserUid, showFollow);
+    } catch (e) {
+      print("Error updating followers and following: $e");
+      throw e;
+    }
+  }
+
+  @override
+  void isBool(bool showFollows) {
+    _showFollow = showFollows;
+    update();
+  }
+
+  @override
+  void isIncrease(bool increase) {
+    if (increase) {
+      _followers++;
+    } else {
+      _followers--;
+    }
     update();
   }
 
   @override
   void onInit() {
-    final String uiddd = FirebaseAuth.instance.currentUser!.uid;
+    final String uiddd = auth;
 
     getData(uiddd);
     filterPostUser(uiddd);
