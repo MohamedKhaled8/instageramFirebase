@@ -31,7 +31,8 @@ class PostData {
       "imgPost": imgPost,
       "uid": uid,
       "postId": postId,
-      "datePublished": datePublished.millisecondsSinceEpoch ~/ 1000, // تحويل التاريخ إلى timestamp
+      "datePublished": datePublished.millisecondsSinceEpoch ~/
+          1000, // تحويل التاريخ إلى timestamp
       "likes": likes,
     };
   }
@@ -46,7 +47,8 @@ class PostData {
       imgPost: snapshot["imgPost"],
       uid: snapshot["uid"],
       postId: snapshot["postId"],
-      datePublished: DateTime.fromMillisecondsSinceEpoch(snapshot["datePublished"] * 1000), // تحويل timestamp إلى DateTime
+      datePublished: DateTime.fromMillisecondsSinceEpoch(
+          snapshot["datePublished"] * 1000), // تحويل timestamp إلى DateTime
       likes: snapshot["likes"],
     );
   }

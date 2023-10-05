@@ -5,10 +5,10 @@ import 'package:instagramclone/core/model/post_model.dart';
 import 'package:instagramclone/core/model/users_model.dart';
 // ignore_for_file: avoid_print
 
-
 class FireBaseServices {
   final CollectionReference users =
       FirebaseFirestore.instance.collection('Users');
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
   Future<void> addUserToDatabase({
     required String uid,
@@ -86,7 +86,6 @@ class FireBaseServices {
       throw e;
     }
   }
-   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
   Future<void> updateFollowersAndFollowing(
       String currentUserUid, String otherUserUid, bool showFollow) async {
@@ -96,7 +95,10 @@ class FireBaseServices {
         await _firebaseFirestore.collection("Users").doc(otherUserUid).update({
           "followers": FieldValue.arrayUnion([currentUserUid]),
         });
-        await _firebaseFirestore.collection("Users").doc(currentUserUid).update({
+        await _firebaseFirestore
+            .collection("Users")
+            .doc(currentUserUid)
+            .update({
           "followers": FieldValue.arrayUnion([otherUserUid]),
         });
       } else {
@@ -104,7 +106,10 @@ class FireBaseServices {
         await _firebaseFirestore.collection("Users").doc(otherUserUid).update({
           "followers": FieldValue.arrayRemove([currentUserUid]),
         });
-        await _firebaseFirestore.collection("Users").doc(currentUserUid).update({
+        await _firebaseFirestore
+            .collection("Users")
+            .doc(currentUserUid)
+            .update({
           "followers": FieldValue.arrayRemove([otherUserUid]),
         });
       }
@@ -112,5 +117,13 @@ class FireBaseServices {
       print("Error updating followers and following: $e");
       throw e;
     }
+  }
+
+  Future<UsersModel> getUserDetails() async {
+    DocumentSnapshot snap = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    return UsersModel.fromMap(snap.data() as Map<String, dynamic>);
   }
 }

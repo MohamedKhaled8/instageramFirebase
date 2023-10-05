@@ -8,8 +8,8 @@ class CustomGridViewProfilePhoto extends StatelessWidget {
   final ProfileControllerImp _profileControllerImp = Get.find();
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      if (_profileControllerImp.filterPostList.isEmpty) {
+    return GetBuilder<ProfileControllerImp>(builder: (_) {
+       if (_profileControllerImp.filterPostList.isEmpty) {
         return const Center(
           child: CircularProgressIndicator(
             color: Colors.white,
@@ -37,5 +37,5 @@ class CustomGridViewProfilePhoto extends StatelessWidget {
         return const Text("Something went wrong");
       }
     });
-  }
+    }
 }

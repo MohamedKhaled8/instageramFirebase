@@ -113,7 +113,7 @@ class ProfileScreen extends StatelessWidget {
                         CustomButtomLocal(
                           onTap: () {},
                           height: 40,
-                          width: 210,
+                          width: 140,
                           radius: 15,
                           border: Border.all(color: Colors.white, width: 0),
                           text: 'Edit Profile',
@@ -128,7 +128,7 @@ class ProfileScreen extends StatelessWidget {
                           onTap: () {},
                           isIcon: true,
                           height: 40,
-                          width: 210,
+                          width: 140,
                           radius: 15,
                           color: const Color.fromARGB(143, 255, 55, 112),
                           fontSize: 16.sp,

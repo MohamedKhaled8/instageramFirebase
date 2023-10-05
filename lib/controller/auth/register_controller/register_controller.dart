@@ -241,7 +241,7 @@ class RegisterControllerImp extends RegisterController {
         folderName: 'profileIMG',
       );
       final userModel = UsersModel(
-        name: name,
+        username: name,
         title: title,
         email: email,
         password: password,

@@ -1,15 +1,15 @@
 class UsersModel {
-  String name;
+  String username;
   String title;
   String email;
-  String password; // Consider using a more secure way to store passwords
+  String password;
   String profileImg;
   String uid;
- List followers;
-  List following; // Specify the type
+  List<dynamic> followers;
+  List<dynamic> following;
 
   UsersModel({
-    required this.name,
+    required this.username,
     required this.title,
     required this.email,
     required this.password,
@@ -21,27 +21,27 @@ class UsersModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'name': name,
+      'name': username,
       'title': title,
       'email': email,
-      'password': password, // Consider hashing the password
+      'password': password,
       'profileImg': profileImg,
       'uid': uid,
-      'following': [],
-      'followers': [],
+      'following': following,
+      'followers': followers,
     };
   }
 
-  factory UsersModel.fromMap(Map<String, dynamic> map) {
+  factory UsersModel.fromMap(map) {
     return UsersModel(
-      name: map['name'] as String,
+      username: map['name'] as String,
       title: map['title'] as String,
       email: map['email'] as String,
-      password: map['password'] as String, // Consider hashing the password
+      password: map['password'] as String,
       profileImg: map['profileImg'] as String,
       uid: map['uid'] as String,
-      following: [], // Specify the type
-      followers: [], // Specify the type
+      following: List.from(map['following']),
+      followers: List.from(map['followers']),
     );
   }
 }
