@@ -31,7 +31,7 @@ class LoginScreen extends StatelessWidget {
       body: SingleChildScrollView(
           child: GetBuilder<LoginScreenControllerImp>(builder: (_) {
         return Form(
-          key: _loginScreenControllerImp.formKeylog,
+          key: _loginScreenControllerImp.formKeyLog,
           child: Column(
             children: [
               SizedBox(

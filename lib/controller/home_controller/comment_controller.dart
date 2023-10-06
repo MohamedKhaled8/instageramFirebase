@@ -39,16 +39,18 @@ class CommentControllerImp extends CommentController {
 
   @override
   Future<void> refreshUser() async {
-    print("refreshUser is Start");
-    UsersModel userModel = await _fireBaseServices.getUserDetails();
-    _userData = userModel;
+    try {
+      UsersModel userModel = await _fireBaseServices.getUserDetails();
+      _userData = userModel;
+      update();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to load user details: $e");
+    }
     update();
-    print("refreshUser is End");
   }
 
   @override
   Future<void> loadComments(String postId) async {
-    print("loadComments is Start");
     try {
       var querySnapshot = await _firebaseFirestore
           .collection('Posts')
@@ -59,9 +61,8 @@ class CommentControllerImp extends CommentController {
 
       comments.assignAll(querySnapshot.docs);
       update();
-      print("loadComments is End");
     } catch (e) {
-      print("Error loading comments: $e");
+      Get.snackbar("Error", "Failed to load comments: $e");
     }
   }
 
@@ -73,27 +74,31 @@ class CommentControllerImp extends CommentController {
     required String username,
     required String uid,
   }) async {
-    if (commentText.isNotEmpty) {
-      print("uploadComment is Start");
-      String commentId = const Uuid().v1();
+    try {
+      if (commentText.isNotEmpty) {
+        String commentId = const Uuid().v1();
 
-      await _firebaseFirestore
-          .collection("Posts")
-          .doc(postId)
-          .collection("Comments")
-          .doc(commentId)
-          .set({
-        "profilePic": profileImg,
-        "username": username,
-        "textComment": commentText,
-        "dataPublished": DateTime.now(),
-        "uid": uid,
-        "commentId": commentId
-      });
-      print("uploadComment is End");
+        await _firebaseFirestore
+            .collection("Posts")
+            .doc(postId)
+            .collection("Comments")
+            .doc(commentId)
+            .set({
+          "profilePic": profileImg,
+          "username": username,
+          "textComment": commentText,
+          "dataPublished": DateTime.now(),
+          "uid": uid,
+          "commentId": commentId
+        });
+        clearTextCont();
+        Get.snackbar("Success", "Comment uploaded successfully");
+      } else {
+        Get.snackbar("Error", "Comment cannot be empty");
+      }
+    } catch (e) {
+      Get.snackbar("Error", "Failed to upload comment: $e");
     }
-
-    update();
   }
 
   @override

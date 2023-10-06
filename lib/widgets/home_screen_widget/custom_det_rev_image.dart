@@ -21,9 +21,7 @@ class CustomDetailesReviewImage extends StatefulWidget {
 }
 
 class _CustomDetailesReviewImageState extends State<CustomDetailesReviewImage> {
-  final HomeControllerImp _homeControllerImp = Get.find();
   int commentCount = 0;
-  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   getCommentCount() async {
     try {
       QuerySnapshot commentdata = await FirebaseFirestore.instance

@@ -4,7 +4,6 @@ import 'package:instagramclone/widgets/add_post/custom_upload_detailes_post.dart
 import 'package:instagramclone/widgets/add_post/custom_upload_photo_add_post.dart';
 import 'package:instagramclone/controller/home_controller/add_post_controller.dart';
 
-
 class AddPostScreen extends StatelessWidget {
   AddPostScreen({super.key});
   final AddPostControllerImp _addPostControllerImp =
@@ -18,6 +17,3 @@ class AddPostScreen extends StatelessWidget {
     });
   }
 }
-
-
-

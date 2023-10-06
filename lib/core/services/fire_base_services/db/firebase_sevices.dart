@@ -1,9 +1,9 @@
+import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:instagramclone/core/model/post_model.dart';
 import 'package:instagramclone/core/model/users_model.dart';
-// ignore_for_file: avoid_print
 
 class FireBaseServices {
   final CollectionReference users =
@@ -17,14 +17,9 @@ class FireBaseServices {
     try {
       final Map<String, dynamic> userData = userModel.toMap();
       await users.doc(uid).set(userData);
-      // ignore: avoid_print
-      print("User Added");
+      Get.snackbar("Success", "User Added");
     } catch (error) {
-      // ignore: avoid_print
-      print("Failed to add user: $error");
-
-      // ignore: use_rethrow_when_possible
-      throw error;
+      Get.snackbar("Error", "Failed to add user: $error");
     }
   }
 
@@ -48,23 +43,29 @@ class FireBaseServices {
         uid: FirebaseAuth.instance.currentUser!.uid,
         username: username);
 
-    posts
-        .doc(newId)
-        .set(postModel.convert2Map())
-        .then((value) => print("done................"))
-        .catchError((error) => print("Failed to post: $error"));
+    try {
+      await posts.doc(newId).set(postModel.convert2Map());
+      Get.snackbar("Success", "Post Uploaded");
+    } catch (e) {
+      Get.snackbar("Error", "Failed to post: $e");
+    }
   }
 
   Future<List<Map<String, dynamic>>> fetchDataFromFirebase() async {
-    final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await FirebaseFirestore.instance.collection('Posts').get();
+    try {
+      final QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await FirebaseFirestore.instance.collection('Posts').get();
 
-    final List<Map<String, dynamic>> data = querySnapshot.docs
-        .map((QueryDocumentSnapshot<Map<String, dynamic>> document) {
-      return document.data();
-    }).toList();
+      final List<Map<String, dynamic>> data = querySnapshot.docs
+          .map((QueryDocumentSnapshot<Map<String, dynamic>> document) {
+        return document.data();
+      }).toList();
 
-    return data;
+      return data;
+    } catch (e) {
+      Get.snackbar("Error", "Failed to fetch data: $e");
+      rethrow;
+    }
   }
 
   Future<Map<String, dynamic>> filterPostUser(String uiddd) async {
@@ -82,8 +83,8 @@ class FireBaseServices {
         "postCount": postCount,
       };
     } catch (e) {
-      // ignore: use_rethrow_when_possible
-      throw e;
+      Get.snackbar("Error", "Failed to filter posts: $e");
+      rethrow;
     }
   }
 
@@ -91,7 +92,6 @@ class FireBaseServices {
       String currentUserUid, String otherUserUid, bool showFollow) async {
     try {
       if (showFollow) {
-        // إذا كان showFollow يساوي true، استخدم arrayUnion
         await _firebaseFirestore.collection("Users").doc(otherUserUid).update({
           "followers": FieldValue.arrayUnion([currentUserUid]),
         });
@@ -102,7 +102,6 @@ class FireBaseServices {
           "followers": FieldValue.arrayUnion([otherUserUid]),
         });
       } else {
-        // إذا كان showFollow يساوي false، استخدم arrayRemove
         await _firebaseFirestore.collection("Users").doc(otherUserUid).update({
           "followers": FieldValue.arrayRemove([currentUserUid]),
         });
@@ -113,17 +112,22 @@ class FireBaseServices {
           "followers": FieldValue.arrayRemove([otherUserUid]),
         });
       }
+      Get.snackbar("Success", "Followers and following updated successfully");
     } catch (e) {
-      print("Error updating followers and following: $e");
-      throw e;
+      Get.snackbar("Error", "Failed to update followers and following: $e");
     }
   }
 
   Future<UsersModel> getUserDetails() async {
-    DocumentSnapshot snap = await FirebaseFirestore.instance
-        .collection('Users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    return UsersModel.fromMap(snap.data() as Map<String, dynamic>);
+    try {
+      DocumentSnapshot snap = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
+      return UsersModel.fromMap(snap.data() as Map<String, dynamic>);
+    } catch (e) {
+      Get.snackbar("Error", "Failed to fetch user data: $e");
+      rethrow;
+    }
   }
 }

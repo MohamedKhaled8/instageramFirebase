@@ -93,7 +93,7 @@ class ProfileControllerImp extends ProfileController {
           .get();
       users.assignAll(query.docs);
     } catch (e) {
-      print("Error fetching user data: $e");
+      Get.snackbar("Error", "Failed to fetch user data: $e");
     }
   }
 
@@ -146,8 +146,7 @@ class ProfileControllerImp extends ProfileController {
       _fireBaseServices.updateFollowersAndFollowing(
           currentUserUid, otherUserUid, showFollow);
     } catch (e) {
-      print("Error updating followers and following: $e");
-      throw e;
+      Get.snackbar("Error", "Failed to update followers and following: $e");
     }
   }
 

@@ -1,10 +1,11 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/core/constant/color.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:instagramclone/controller/home_controller/comment_controller.dart';
 import 'package:instagramclone/widgets/comment_screen_widget/custom_comment_user.dart';
 import 'package:instagramclone/widgets/comment_screen_widget/custom_load_comment.dart';
+// ignore_for_file: must_be_immutable
+
 
 class CommentsScreen extends StatelessWidget {
   final Map data;

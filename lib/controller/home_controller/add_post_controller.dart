@@ -41,11 +41,12 @@ class AddPostControllerImp extends AddPostController {
         imgName = basename(pickedImg.path);
         int random = Random().nextInt(9999999);
         imgName = "$random$imgName";
+        update();
       } else {
-        Get.snackbar("Error", "${const Text("NO img selected")}");
+        Get.snackbar("Error", "NO img selected");
       }
     } catch (e) {
-      Get.snackbar("Error", "${Text(e.toString())}");
+      Get.snackbar("Error", e.toString());
     }
     update();
   }
@@ -84,7 +85,7 @@ class AddPostControllerImp extends AddPostController {
               SizedBox(
                 height: 22.h,
               ),
-              GestureDetector(
+              InkWell(
                 onTap: () {
                   uploadImage2Screen(ImageSource.gallery);
                 },
@@ -124,8 +125,7 @@ class AddPostControllerImp extends AddPostController {
 
       userData = snapshot.data()!;
     } catch (e) {
-      // ignore: avoid_print
-      print(e.toString());
+      Get.snackbar("Error", e.toString(), snackPosition: SnackPosition.BOTTOM);
     }
 
     isLoading = false;
@@ -169,11 +169,13 @@ class AddPostControllerImp extends AddPostController {
           username: username);
 
       message = " Posted successfully ♥ ♥";
+      update();
     } on FirebaseAuthException {
       Get.snackbar(message, message);
     } catch (e) {
       Get.snackbar(message, message);
     }
+    update();
   }
 
   @override

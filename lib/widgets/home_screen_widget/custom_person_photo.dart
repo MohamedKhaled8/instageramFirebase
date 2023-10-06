@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:instagramclone/core/constant/color.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:instagramclone/core/animations/heart_animation.dart';
 import 'package:instagramclone/view/comment_view/comment_screen.dart';
 import 'package:instagramclone/controller/home_controller/home_controller.dart';
 
@@ -56,22 +56,78 @@ class CustomPersonPostDesign extends StatelessWidget {
                   ))
             ],
           ),
-          Image.network(
-            data["imgPost"],
-            height: MediaQuery.of(context).size.height * 0.35,
-            width: double.infinity,
+          SizedBox(
+            height: 10.h,
+          ),
+          GestureDetector(
+            onDoubleTap: () async {
+              await _homeControllerImp.onClickPic(postData: data);
+            },
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.network(
+                  data["imgPost"],
+                  loadingBuilder: (context, child, loadingProgress) {
+                    return loadingProgress == null
+                        ? child
+                        : SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.35,
+                            child: const Center(
+                                child: CircularProgressIndicator(
+                              color: Colors.white,
+                            )),
+                          );
+                  },
+                  fit: BoxFit.cover,
+                  height: MediaQuery.of(context).size.height * 0.35,
+                  width: double.infinity,
+                ),
+                AnimatedOpacity(
+                  opacity: _homeControllerImp.isLikeAnimating ? 1 : 0,
+                  duration: const Duration(milliseconds: 200),
+                  child: LikeAnimation(
+                    duration: const Duration(milliseconds: 400),
+                    isAnimating: _homeControllerImp.isLikeAnimating,
+                    onEnd: () {
+                      _homeControllerImp.updateValues(false);
+                    },
+                    child: const Icon(
+                      Icons.favorite,
+                      color: Colors.white,
+                      size: 111,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
-                  IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.favorite_border,
-                        color: Colors.white,
-                      )),
+                  LikeAnimation(
+                    isAnimating: data["likes"] != null &&
+                        data["likes"]
+                            .contains(FirebaseAuth.instance.currentUser?.uid),
+                    smallLike: true,
+                    child: IconButton(
+                      onPressed: () async {
+                        await _homeControllerImp.toggleLikes(postData: data);
+                      },
+                      icon: data["likes"] != null &&
+                              data["likes"].contains(
+                                  FirebaseAuth.instance.currentUser?.uid)
+                          ? const Icon(
+                              Icons.favorite,
+                              color: Colors.red,
+                            )
+                          : const Icon(
+                              Icons.favorite_border,
+                            ),
+                    ),
+                  ),
                   IconButton(
                       onPressed: () {
                         Get.to(() =>

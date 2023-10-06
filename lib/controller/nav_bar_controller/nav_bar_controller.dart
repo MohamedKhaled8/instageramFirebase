@@ -18,11 +18,11 @@ class BottomNavigationBarControllerImp extends BottomNavigationBarController {
     if (user != null) {
       return user.uid;
     } else {
-      // يمكنك تنفيذ منطق هنا إذا لم يتم العثور على مستخدم مسجل داخل.
-      return ""; // أو يمكنك إرجاع قيمة أخرى تُعبر عن عدم تسجيل الدخول.
+      return ""; 
     }
   }
 
+  @override
   void navigateToProfileScreen() {
     final uid = getCurrentUserUid();
     Get.to(() =>

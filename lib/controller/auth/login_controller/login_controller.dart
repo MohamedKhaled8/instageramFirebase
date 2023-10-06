@@ -15,7 +15,7 @@ abstract class LoginScreenController extends GetxController {
 class LoginScreenControllerImp extends LoginScreenController {
   final TextEditingController emailLogCont = TextEditingController();
   final TextEditingController passwordLogCont = TextEditingController();
-  final GlobalKey<FormState> formKeylog = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKeyLog = GlobalKey<FormState>();
   bool isShowPassword = true;
 
   @override
@@ -45,7 +45,7 @@ class LoginScreenControllerImp extends LoginScreenController {
         );
         update();
 
-        Get.offAll( CustomBottomNavBar());
+        Get.offAll(CustomBottomNavBar());
       } else {
         Get.snackbar(
           "Login Failed",
@@ -66,7 +66,7 @@ class LoginScreenControllerImp extends LoginScreenController {
 
   @override
   Future<void> sendDataLoginUserToFirebase() async {
-    if (formKeylog.currentState!.validate()) {
+    if (formKeyLog.currentState!.validate()) {
       loginoFirebase(
         email: emailLogCont.text.trim(),
         password: passwordLogCont.text.trim(),

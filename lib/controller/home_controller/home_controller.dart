@@ -2,64 +2,119 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:instagramclone/core/services/fire_base_services/db/firebase_sevices.dart';
 
 abstract class HomeController extends GetxController {
   void signOut();
   Future<void> fetchData();
-  // Future<void> getCommentCount();
   showmodel(BuildContext context, Map data);
+  Future<void> onClickPic({required Map postData});
+  Future<void> toggleLikes({required Map postData});
+  void updateValues(bool isAnimating);
+  Future<void> isisAnimating({required Map postData});
 }
 
 class HomeControllerImp extends HomeController {
-  final isLoading = true.obs;
-  final hasError = false.obs;
+  bool isLoading = true;
+  bool hasError = false;
   final posts = List<Map<String, dynamic>>.empty().obs;
-  RxInt commentCount = 0.obs;
+  int commentCount = 0;
+  int pageSize = 10;
+  int currentPage = 1;
+  bool showHeart = false;
+  bool isLikeAnimating = false;
 
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  final String _auth = FirebaseAuth.instance.currentUser!.uid;
   @override
   void onInit() {
     super.onInit();
     fetchData();
-    // getCommentCount();
   }
 
-  // @override
-  // Future<void> getCommentCount() async {
-  //   try {
-  //     QuerySnapshot<Map<String, dynamic>> commentData = await _firebaseFirestore
-  //         .collection("Posts")
-  //         .doc(data["postId"])
-  //         .collection("Comments")
-  //         .get();
-  //     print("Start");
-  //     commentCount.value = commentData.docs.length;
-  //     print("End");
-  //   } catch (e) {
-  //     print(e.toString());
-  //   }
-  // }
+  @override
+  void updateValues(
+    bool isAnimating,
+  ) {
+    isLikeAnimating = isAnimating;
+
+    update();
+  }
+
+  @override
+  Future<void> onClickPic({required Map postData}) async {
+    isLikeAnimating = true;
+    try {
+      await _firebaseFirestore
+          .collection("Posts")
+          .doc(postData["postId"])
+          .update({
+        "likes": FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid])
+      });
+    } catch (e) {
+      Get.snackbar("Error", "Failed to like post: $e");
+    }
+    update();
+  }
+
+  @override
+  Future<void> toggleLikes({required Map postData}) async {
+    try {
+      if (postData["likes"].contains(_auth)) {
+        await _firebaseFirestore
+            .collection("Posts")
+            .doc(postData["postId"])
+            .update({
+          "likes": FieldValue.arrayRemove([_auth]),
+        });
+      } else {
+        await _firebaseFirestore
+            .collection("Posts")
+            .doc(postData["postId"])
+            .update({
+          "likes": FieldValue.arrayUnion([_auth])
+        });
+      }
+      postData["likes"].contains(_auth)
+          ? postData["likes"].remove(_auth)
+          : postData["likes"].add(_auth);
+      update();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to toggle like: $e");
+    }
+    update();
+  }
 
   @override
   Future<void> fetchData() async {
     try {
       final data = await FireBaseServices().fetchDataFromFirebase();
 
+      if (data.isEmpty) {
+        // No more data available
+        isLoading = false;
+        hasError = false;
+        return;
+      }
       posts.assignAll(data);
-      isLoading.value = false;
-      hasError.value = false;
+      isLoading = false;
+      hasError = false;
 
       update();
     } catch (error) {
-      isLoading.value = false;
-      hasError.value = true;
+      isLoading = false;
+      hasError = true;
 
       update();
     }
+    update();
+  }
+
+  @override
+  Future<void> isisAnimating({required Map postData}) async {
+    postData["likes"].contains(_auth);
+    update();
   }
 
   @override
@@ -69,11 +124,11 @@ class HomeControllerImp extends HomeController {
       builder: (BuildContext context) {
         return SimpleDialog(
           children: [
-            FirebaseAuth.instance.currentUser!.uid == data["uid"]
+            _auth == data["uid"]
                 ? SimpleDialogOption(
                     onPressed: () async {
                       Get.back();
-                      await FirebaseFirestore.instance
+                      await _firebaseFirestore
                           .collection("Posts")
                           .doc(data["postId"])
                           .delete();
@@ -118,7 +173,11 @@ class HomeControllerImp extends HomeController {
 
   @override
   void signOut() async {
-    await FirebaseAuth.instance.signOut();
+    try {
+      await FirebaseAuth.instance.signOut();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to sign out: $e");
+    }
     update();
   }
 }

@@ -36,35 +36,41 @@ class HomeScreen extends StatelessWidget {
             height: 33.h,
           ),
         ),
-        body: Obx(() {
-          if (_homeControllerImp.isLoading.value) {
-            return const Center(
-              child: CircularProgressIndicator(
-                color: Colors.white,
-              ),
-            );
-          } else if (_homeControllerImp.hasError.value) {
-            const Center(
-              child: Text('An error occurred while retrieving data'),
-            );
-          } else {
-            return ListView.builder(
-                itemCount: _homeControllerImp.posts.length,
-                itemBuilder: (context, index) {
-                  final data = _homeControllerImp.posts[index];
-                  return Column(
-                    children: [
-                      CustomPersonPostDesign(
-                        data: data,
-                      ),
-                      CustomDetailesReviewImage(
-                        data: data,
-                      ),
-                    ],
-                  );
-                });
-          }
-          return const SizedBox();
-        }));
+        body: GetBuilder<HomeControllerImp>(
+          builder: (_) {
+            if (_homeControllerImp.isLoading) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              );
+            } else if (_homeControllerImp.hasError) {
+              const Center(
+                child: Text('An error occurred while retrieving data'),
+              );
+            } else {
+              return ListView.builder(
+                  itemCount: _homeControllerImp.posts.length,
+                  itemBuilder: (context, index) {
+                    final data = _homeControllerImp.posts[index];
+                    if (index == _homeControllerImp.posts.length - 1) {
+                      // Reached the end, load more data
+                      _homeControllerImp.fetchData();
+                    }
+                    return Column(
+                      children: [
+                        CustomPersonPostDesign(
+                          data: data,
+                        ),
+                        CustomDetailesReviewImage(
+                          data: data,
+                        ),
+                      ],
+                    );
+                  });
+            }
+            return const SizedBox();
+          },
+        ));
   }
 }
